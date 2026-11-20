@@ -6,7 +6,7 @@ export default function ProjectRepositoryLink({ href, title }: { href: string; t
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`View ${title} on GitHub`}
+      aria-label={`View on GitHub — ${title}`}
       className="mt-4 inline-flex min-h-11 w-fit items-center gap-2 rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 text-sm font-semibold text-cyan-100 transition-colors hover:bg-cyan-300/20"
     >
       View on GitHub
