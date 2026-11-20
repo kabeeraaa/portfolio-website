@@ -187,9 +187,12 @@ test("Main shows the detailed portfolio records", async ({ page }) => {
     for (const technology of tech) {
       await expect(card.getByText(technology, { exact: true })).toBeVisible();
     }
-    const link = card.getByRole("link", { name: `View ${title} on GitHub` });
-    if (repositoryUrl) await expect(link).toHaveAttribute("href", repositoryUrl);
-    else await expect(link).toHaveCount(0);
+    const link = card.getByRole("link");
+    if (repositoryUrl) {
+      await expect(link).toHaveText("View on GitHub");
+      await expect(link).toHaveAccessibleName(`View on GitHub — ${title}`);
+      await expect(link).toHaveAttribute("href", repositoryUrl);
+    } else await expect(link).toHaveCount(0);
   }
   for (const { title, items } of skillGroups) {
     await expect(main.locator("#skills").getByText(title, { exact: true })).toBeVisible();
@@ -283,9 +286,12 @@ test("Game project dialogs show Main's descriptions, stacks, and repository link
     for (const technology of tech) {
       await expect(dialog.getByText(technology, { exact: true })).toBeVisible();
     }
-    const link = dialog.getByRole("link", { name: `View ${title} on GitHub` });
-    if (repositoryUrl) await expect(link).toHaveAttribute("href", repositoryUrl);
-    else await expect(link).toHaveCount(0);
+    const link = dialog.getByRole("link");
+    if (repositoryUrl) {
+      await expect(link).toHaveText("View on GitHub");
+      await expect(link).toHaveAccessibleName(`View on GitHub — ${title}`);
+      await expect(link).toHaveAttribute("href", repositoryUrl);
+    } else await expect(link).toHaveCount(0);
     await dialog.getByRole("button", { name: "Close project details" }).click();
     await expect(dialog).toBeHidden();
   }

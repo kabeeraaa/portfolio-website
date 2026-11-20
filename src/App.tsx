@@ -12,16 +12,16 @@ import ResearchSection from "./components/main/ResearchSection";
 import ProjectsSection from "./components/main/ProjectsSection";
 import SkillsSection from "./components/main/SkillsSection";
 import ContactSection from "./components/main/ContactSection";
+import { useSectionNavigation } from "./components/main/useSectionNavigation";
 
-export default function App() {
-  const [activeSection, setActiveSection] = React.useState("about");
+export default function App({ scrollFrameRef }: { scrollFrameRef: React.RefObject<HTMLDivElement | null> }) {
   const [menuOpen, setMenuOpen] = React.useState(false);
   const reduceMotion = useReducedMotion();
   const [showBoot, setShowBoot] = React.useState(() => !reduceMotion);
   const booting = showBoot && !reduceMotion;
-  const desktopNavRef = React.useRef<HTMLElement>(null);
   const headerRef = React.useRef<HTMLElement>(null);
   const menuButtonRef = React.useRef<HTMLButtonElement>(null);
+  const { activeSection, navigateToSection } = useSectionNavigation(scrollFrameRef, headerRef);
 
   React.useEffect(() => {
     if (!booting) return;
@@ -39,46 +39,9 @@ export default function App() {
     return () => desktop.removeEventListener("change", closeOnDesktop);
   }, [menuOpen]);
 
-  React.useEffect(() => {
-    if (typeof window === "undefined" || typeof IntersectionObserver === "undefined") {
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-
-        if (visible[0]?.target?.id) {
-          setActiveSection(visible[0].target.id);
-        }
-      },
-      { threshold: [0.2, 0.45, 0.7], rootMargin: "-10% 0px -20% 0px" }
-    );
-
-    menuItems.forEach((item) => {
-      const node = document.getElementById(item.id);
-      if (node) observer.observe(node);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
   const handleMenuClick = (id: SectionId) => {
-    setActiveSection(id);
     setMenuOpen(false);
-    const target = document.getElementById(id);
-    if (!target) return;
-    const navigate = () => {
-      const desktopNavHeight = desktopNavRef.current?.offsetHeight ? headerRef.current?.offsetHeight ?? 0 : 0;
-      const offset = desktopNavHeight ? desktopNavHeight + 36 : 72;
-      target.focus({ preventScroll: true });
-      window.scrollTo({
-        top: window.scrollY + target.getBoundingClientRect().top - offset,
-        behavior: reduceMotion ? "instant" : "smooth",
-      });
-    };
+    const navigate = () => navigateToSection(id, reduceMotion ? "instant" : "smooth");
     if (menuOpen) window.requestAnimationFrame(navigate);
     else navigate();
   };
@@ -217,7 +180,7 @@ export default function App() {
         ) : null}
       </AnimatePresence>
 
-      <main aria-label="Main portfolio" inert={booting || menuOpen} className="relative z-10 mx-auto w-full max-w-[100rem] px-4 pt-4 pb-24 sm:px-6 md:px-9 md:pt-8">
+      <main aria-label="Main portfolio" inert={booting || menuOpen} className="relative z-10 mx-auto w-full max-w-[100rem] px-4 pt-4 pb-6 sm:px-6 md:px-9 md:pt-8 lg:pb-24">
         <SkipLink targetId="about" onSkip={() => handleMenuClick("about")} />
         <motion.header
           ref={headerRef}
@@ -231,7 +194,7 @@ export default function App() {
               <div className="text-xs uppercase tracking-[0.25em] text-cyan-200/80">{profile.name}</div>
               <div className="text-xl leading-tight font-black italic tracking-tight sm:text-2xl xl:whitespace-nowrap 2xl:text-4xl">PORTFOLIO // PERSONA 03</div>
             </div>
-            <nav ref={desktopNavRef} aria-label="Portfolio sections" className="hidden flex-wrap gap-2 lg:flex">
+            <nav aria-label="Portfolio sections" className="hidden flex-wrap gap-2 lg:flex">
               {menuItems.map((item) => (
                 <button
                   key={item.id}

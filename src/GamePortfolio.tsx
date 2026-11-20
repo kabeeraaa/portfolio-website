@@ -27,7 +27,7 @@ export default function GamePortfolio() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: reduceMotion ? 0 : 0.6 }}
-      className="relative h-dvh w-full overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#031325] text-white lg:overflow-hidden"
+      className="relative h-full w-full overflow-x-hidden overflow-y-auto overscroll-y-contain bg-[#031325] text-white lg:h-dvh lg:overflow-hidden"
     >
       <SkipLink targetId="game-panel" onSkip={() => {
         panelRef.current?.focus({ preventScroll: true });
@@ -38,7 +38,7 @@ export default function GamePortfolio() {
       <div className="absolute top-20 left-[28%] h-[70%] w-px bg-cyan-300/10" />
       <div className="absolute top-20 left-[62%] h-[70%] w-px bg-cyan-300/10" />
 
-      <div className="relative grid min-h-full w-full content-start pb-24 lg:h-full lg:grid-cols-[31%_27%_42%] lg:grid-rows-[minmax(0,1fr)] lg:content-stretch lg:pb-0 2xl:grid-cols-[34%_28%_38%]">
+      <div className="relative grid min-h-full w-full content-start pb-5 lg:h-full lg:grid-cols-[31%_27%_42%] lg:grid-rows-[minmax(0,1fr)] lg:content-stretch lg:pb-0 2xl:grid-cols-[34%_28%_38%]">
         <OperatorAvatar />
         <GameMenu active={active} onSelect={selectSection} />
         <GamePanel active={active} panelRef={panelRef} onSelectProject={setSelectedProject} />
